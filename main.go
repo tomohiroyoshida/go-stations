@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/TechBowl-japan/go-stations/db"
+	"github.com/TechBowl-japan/go-stations/handler"
 )
 
 func main() {
@@ -51,6 +53,10 @@ func realMain() error {
 	mux := http.NewServeMux()
 
 	// TODO: ここから実装を行う
+	// mux.Handle("/healthz", &handler.HealthzHandler{})
+	fmt.Println("server start:")
+	mux.Handle("/healthz", &handler.HealthzHandler{})
+
 	http.ListenAndServe(port, mux)
 	return nil
 }
