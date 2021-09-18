@@ -26,7 +26,23 @@ func (s *TODOService) CreateTODO(ctx context.Context, subject, description strin
 		confirm = `SELECT subject, description, created_at, updated_at FROM todos WHERE id = ?`
 	)
 
-	return nil, nil
+	// ここから
+	// TODO を保存する際に利用するメソッドは、PrepareContext メソッドや ExecContext メソッド
+	result, err := s.db.ExecContext(ctx, insert, subject, description)
+	if err != nil {
+		return nil, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+	// 保存するTODOを読み取る際に利用するメソッドは QueryRowContext メソッドを利用する
+	var todo model.TODO
+	err = s.db.QueryRowContext(ctx, confirm, id).Scan(&todo.Subject, &todo.Description, &todo.CreatedAt, &todo.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &todo, nil
 }
 
 // ReadTODO reads TODOs on DB.
