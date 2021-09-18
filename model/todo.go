@@ -13,24 +13,27 @@ type (
 	}
 
 	// A CreateTODORequest expresses ...
-	CreateTODORequest struct{ TODO }
+	CreateTODORequest struct {
+		Subject     string `json:"subject"`
+		Description string `json:"description"`
+	}
 	// A CreateTODOResponse expresses ...
 	CreateTODOResponse struct {
-		TODO `json:"todo"`
+		TODO TODO `json:"todo"`
 	}
 
 	// A ReadTODORequest expresses ...
-	ReadTODORequest struct{ TODO }
+	ReadTODORequest struct{}
 	// A ReadTODOResponse expresses ...
-	ReadTODOResponse struct{ TODO }
+	ReadTODOResponse struct{}
 
 	// A UpdateTODORequest expresses ...
-	UpdateTODORequest struct{ TODO }
+	UpdateTODORequest struct{}
 	// A UpdateTODOResponse expresses ...
-	UpdateTODOResponse struct{ TODO }
+	UpdateTODOResponse struct{}
 
 	// A DeleteTODORequest expresses ...
-	DeleteTODORequest struct{ TODO }
+	DeleteTODORequest struct{}
 	// A DeleteTODOResponse expresses ...
-	DeleteTODOResponse struct{ TODO }
+	DeleteTODOResponse struct{}
 )
