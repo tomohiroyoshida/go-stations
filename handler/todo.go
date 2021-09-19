@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/TechBowl-japan/go-stations/model"
@@ -25,6 +26,7 @@ func NewTODOHandler(svc *service.TODOService) *TODOHandler {
 func (h *TODOHandler) Create(ctx context.Context, req *model.CreateTODORequest) (*model.CreateTODOResponse, error) {
 	res, err := h.svc.CreateTODO(ctx, req.Subject, req.Description)
 	if err != nil {
+		log.Fatal("err: ", err)
 		return nil, err
 	}
 	return &model.CreateTODOResponse{TODO: *res}, nil
@@ -55,16 +57,16 @@ func (h *TODOHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		req := model.CreateTODORequest{}
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			return
+			log.Fatal("err: ", err)
 		}
 		if req.Subject == "" {
 			w.WriteHeader(http.StatusBadRequest)
-			return
+			log.Fatal("Subject is empty")
 		}
 		res, err := h.Create(r.Context(), &req)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			return
+			log.Fatal("err: ", err)
 		}
 		json.NewEncoder(w).Encode(res)
 	}

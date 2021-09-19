@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"database/sql"
+	"log"
 
 	"github.com/TechBowl-japan/go-stations/model"
 )
@@ -28,19 +29,25 @@ func (s *TODOService) CreateTODO(ctx context.Context, subject, description strin
 
 	// ここから
 	// TODO を保存する際に利用するメソッドは、PrepareContext メソッドや ExecContext メソッド
-	result, err := s.db.ExecContext(ctx, insert, subject, description)
+	res, err := s.db.ExecContext(ctx, insert, subject, description)
 	if err != nil {
 		return nil, err
 	}
-	id, err := result.LastInsertId()
+	id, err := res.LastInsertId()
 	if err != nil {
 		return nil, err
 	}
-	// 保存するTODOを読み取る際に利用するメソッドは QueryRowContext メソッドを利用する
+
 	var todo model.TODO
+	// 保存するTODOを読み取る際に利用するメソッドは QueryRowContext メソッドを利用する
 	err = s.db.QueryRowContext(ctx, confirm, id).Scan(&todo.Subject, &todo.Description, &todo.CreatedAt, &todo.UpdatedAt)
-	if err != nil {
-		return nil, err
+	switch err {
+	case sql.ErrNoRows:
+		log.Printf("No row error. id: %d", id)
+	case nil:
+		log.Fatal("Query error: ", err)
+	default:
+		log.Fatal("Some error: ", err)
 	}
 	return &todo, nil
 }
