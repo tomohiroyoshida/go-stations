@@ -46,8 +46,6 @@ func (s *TODOService) CreateTODO(ctx context.Context, subject, description strin
 		log.Printf("No row error. id: %d", id)
 	case nil:
 		log.Fatal("Query error: ", err)
-	default:
-		log.Fatal("Some error: ", err)
 	}
 	return &todo, nil
 }
