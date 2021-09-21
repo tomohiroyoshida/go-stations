@@ -55,7 +55,7 @@ func (h *TODOHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
 	case http.MethodPost:
-		req := model.CreateTODORequest{}
+		var req model.CreateTODORequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			log.Fatal("err: ", err)
 		}
@@ -63,11 +63,19 @@ func (h *TODOHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			log.Fatal("Subject is empty")
 		}
+
 		res, err := h.Create(r.Context(), &req)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			log.Fatal("err: ", err)
 		}
-		json.NewEncoder(w).Encode(res)
+
+		result, err := json.Marshal(res)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// json.NewEncoder(w).Encode(res) TODO: これだけでもいける？
+		// w.WriteHeader(http.StatusOK) w.Write()がcallするので省略可能
+		w.Write(result)
 	}
 }
