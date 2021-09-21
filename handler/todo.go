@@ -74,7 +74,7 @@ func (h *TODOHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		// json.NewEncoder(w).Encode(res) TODO: これだけでもいける？
+		// json.NewEncoder(w).Encode(result) TODO: これだけでもいける？
 		// w.WriteHeader(http.StatusOK) w.Write()がcallするので省略可能
 		w.Write(result)
 	}
